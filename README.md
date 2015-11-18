@@ -1,13 +1,24 @@
 # MCPE2Dynmap
 WARNING - This is not intended as a drop in script to magically make dynmap work for your MCPE server but as a help for server owners who wish to see how we are doing it on our server
 
-The basic job of the script is to
-copy the world(s) from pocketmine to a spigot server folder
-use a convertor to change the maps to anvil (unfortunatley the only working tool I can find is a GUI hence the very dodgy method of launching the program in an empty X server and sending kepresses - if anyone has a cli tool plz plz let me know!)
-read the differences between this copy and the copy made when the last time the script ran (if it hasnt ran before that will be everything)
-Start the spigot server and via rcon get each changed map region updated
-Stop the spigot server - copy the updated render onto the (live) webserver folder over the old one
-take some snapshots of the rendered map (optional I am making a timelapse video of our server!)
-copy the map that has just been rendered into another folder for a comparision to be made when the script runs next time
+The script(s) Wattz MCPE uses to convert the map to anvil and render it via Minecraft overviewer - feel free to copy and adapt but its not a drop in solution by any means
 
-If you are thinking of doing this youself I would try the process manually first then customise the script. You will most likley end up with a conversion with bodged lighting. Dynmap can be configured to ingore this fortunatley - but you will need to configure dynmap to create a folder that can be dropped in a webserver without needing a running server - plenty of info on the dynmap website! 
+There are two conversion scripts
+
+run.sh
+	Copies world from pocketmine folder
+	Compares timestamps against previous conversion
+	Creates a folder with only the updated mcr files symlinked in
+	Copies a generic level.dat in - pocketmine generated level.dat doesnt work with server
+	symlinks that folder with only updates to world in a minecraft server folder
+	runs the minecraft pc server to start converting the map
+	monitors the server and output files - if server crashes while converting it removes the mcr that (probably) caused the crash and attempts to continue
+	when conversion finsihed copies new mca files back to main copy with any older mca's
+	copies the modification times from the mcr files to the mca files as they are lost in conversion and needed for overviewer to not re-render whole regions rather than chunks
+	runs overviewer on new files
+
+run-new.sh
+	as above but uses a version of SaveConvertor.jar that I modified to allow cli only usage instead of the minecraft server and keep pocketmine level.dat . More reliable as does not stop on errors. But lighting is broken - not a problem if you use overviewers basic flat lighting model
+
+
+To use this with the minecraft server conversion you will need to download one of course - I cannot supply it here
